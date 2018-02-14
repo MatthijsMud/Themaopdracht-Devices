@@ -1,9 +1,9 @@
 [submodule "hwlib"]
-	path = hwlib
+	path = src/hwlib
 	url = git://github.com/wovo/hwlib.git
 [submodule "bmptk"]
-	path = bmptk
+	path = src/bmptk
 	url = git://github.com/wovo/bmptk.git
 [submodule "rtos"]
-	path = rtos
+	path = src/rtos
 	url = git://github.com/wovo/rtos.git
