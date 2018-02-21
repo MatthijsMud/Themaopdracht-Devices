@@ -12,7 +12,7 @@ void EventHandler::addEventSource(EventSource & source)
 {
 	if (eventSourceCount < MAX_N_EVENT_SOURCES)
 	{
-		eventSources[eventSourceCount] = &source;
+		eventSources[eventSourceCount++] = &source;
 	}
 }
 
