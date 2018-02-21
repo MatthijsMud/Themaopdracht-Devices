@@ -4,15 +4,18 @@
 #include "hwlib.hpp"
 #include "rtos.hpp"
 #include "Message.hpp"
+#include "Led.hpp"
+#include "hwlib.hpp"
 
 class SendIRController : public rtos::task<> {
 	private :
 		void main();
-
+		rtos::timer SendIRTimer{this, "SendIRTimer"};
+		Led led{27};
 
 	public :
 
-		channel< uint16_t, 1 > buffer( this, "MessageChannel" );
+		rtos::channel< uint16_t, 1 > MessageChannel{this, "MessageChannel" };
 		void RequestSend(uint16_t incommingMessage);
 		SendIRController() {}
 
