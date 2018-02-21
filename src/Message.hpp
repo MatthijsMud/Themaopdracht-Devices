@@ -1,10 +1,11 @@
 #ifndef DEVICES_MESSAGE_HPP
 #define DEVICES_MESSAGE_HPP
+#include <stdint.h>
 
 class Message
 {
 public:
-	Message(explicit uint16_t Message);
+	explicit Message(uint16_t internalMessage);
 	uint16_t getMessage();
 	void SetPlayer(int player);
 	void SetData(int weapon);
@@ -12,8 +13,8 @@ public:
 	void StartMessage();
 
 private:
-	uint16_t Message = 1<<15;
-	RecalcControl();
+	uint16_t internalMessage = 1 << 15;
+	void RecalcControl();
 };
 
 #endif // DEVICES_MESSAGE_HPP

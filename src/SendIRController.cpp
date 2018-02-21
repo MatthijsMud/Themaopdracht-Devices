@@ -1,27 +1,34 @@
-#include <SendIRController.hpp>
+#include "SendIRController.hpp"
 
-void main(){
-  uint16_t message = MessageChannel.read()
+void SendIRController::main(){
+  uint16_t message = MessageChannel.read();
   for (int j = 0; j < 2; j++){
     for(int i = 0; i < 16; i++){
-      if((message >> (15-i % 16)) & 1 == 1){
+      if(((message >> (15-i % 16)) & 1) == 1){
         led.on();
-        task::wait_us(1600);
+        SendIRTimer.set(1600);
+        wait(SendIRTimer);
+
         led.off();
-        task::wait_us(800);
+        SendIRTimer.set(800);
+        wait(SendIRTimer);
       }
-      else if(message >> (15-i % 16)) & 1 == 0){
+      else if(((message >> (15-i % 16)) & 1) == 0){
         led.on();
-        task::wait_us(800);
+        SendIRTimer.set(800);
+        wait(SendIRTimer);
+
         led.off();
-        task::wait_us(1600);
+        SendIRTimer.set(1600);
+        wait(SendIRTimer);
       }
     }
-    task::wait_ms(3);
+    SendIRTimer.set(3000);
+    wait(SendIRTimer);
   }
 }
 
-void RequestSend(uint16_t incommingMessage ){
+void SendIRController::RequestSend(uint16_t incommingMessage ){
   MessageChannel.write(incommingMessage);
 
 }
