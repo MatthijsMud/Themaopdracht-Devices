@@ -8,7 +8,7 @@
 class EventSource : public NonCopyable
 {
 public:
-	void poll();
+	virtual void poll() = 0;
 
 protected:
 	~EventSource();
