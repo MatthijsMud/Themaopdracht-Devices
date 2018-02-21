@@ -12,7 +12,7 @@ public:
 	//! @brief Listens to keypresses on the keypad.
 	//! 
 	//! @param key Representation of the charcter that was pressed on the keypad.
-	void onKeyPress(unsigned char key);
+	virtual void onKeyPress(unsigned char key) = 0;
 	
 protected:
 	// You should not delete listeners through an interface.
