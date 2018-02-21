@@ -9,9 +9,11 @@ class SendIRController : public rtos::task<> {
 	private :
 		void main();
 
-		void send(Message);
+
 	public :
 
+		channel< uint16_t, 1 > buffer( this, "MessageChannel" );
+		void RequestSend(uint16_t incommingMessage);
 		SendIRController() {}
 
 };

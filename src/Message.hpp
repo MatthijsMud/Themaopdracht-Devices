@@ -4,7 +4,7 @@
 class Message
 {
 public:
-	Message();
+	Message(explicit uint16_t Message);
 	uint16_t getMessage();
 	void SetPlayer(int player);
 	void SetData(int weapon);
