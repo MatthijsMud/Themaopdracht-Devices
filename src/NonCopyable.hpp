@@ -9,11 +9,13 @@
 //! assignment operator and constructor. Make sure the inheritence is public.
 class NonCopyable
 {
+public:
+	NonCopyable() = default;
 protected:
 	// The class "NonCopyable" is not intended to be used as references/pointers.
 	// Instances of derived classes should be explicitly deleted; enforce that by
 	// marking this destructor protected. 
-	~NonCopyable();
+	~NonCopyable() = default;
 private:
 	NonCopyable(const NonCopyable &) = delete;
 	NonCopyable & operator=(const NonCopyable &) = delete;
