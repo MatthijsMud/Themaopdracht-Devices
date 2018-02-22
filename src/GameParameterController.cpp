@@ -19,13 +19,13 @@ void GameParameterController::main(){
 
           if (std::isdigit(temp)){
             gametime = gametime*10 + (int)temp;
+            if(WaitForKeypress('*')){
+              //TO-DO send command
+            }
           }
-          elseif(temp = '*'){
+          if(temp = '*'){
             //TO-DO send command
           }
-
-
-
         }
       }
 
