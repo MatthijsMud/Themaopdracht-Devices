@@ -3,19 +3,23 @@
 
 #include "hwlib.hpp"
 #include "rtos.hpp"
+#include "Message.hpp"
+#include "Led.hpp"
+#include "hwlib.hpp"
 
-#include "IRListener.hpp"
-
-class ReceiveIRController : public rtos::task<> {
+class SendIRController : public rtos::task<> {
 	private :
 		void main();
+		rtos::timer SendIRTimer{this, "SendIRTimer"};
+		Led led{27};
 
-		void sendMessage(Message);
 	public :
 
-		ReceiveIRController() {}
-		void addListener();
-}
+		rtos::channel< uint16_t, 1 > MessageChannel{this, "MessageChannel" };
+		void RequestSend(uint16_t incommingMessage);
+		SendIRController() {}
+
+};
 
 
 #endif
