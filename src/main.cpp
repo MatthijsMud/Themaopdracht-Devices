@@ -1,5 +1,6 @@
 #include <hwlib.hpp>
 #include <rtos.hpp>
+#include "ReceiveIRController.hpp"
 
 
 int main()
