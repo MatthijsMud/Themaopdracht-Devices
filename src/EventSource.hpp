@@ -14,7 +14,7 @@ public:
 	EventSource()=default;
 
 protected:
-	~EventSource();
+	~EventSource()=default;
 };
 
 #endif // DEVICES_EVENT_SOURCE_HPP
