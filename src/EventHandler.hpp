@@ -13,7 +13,7 @@ class EventHandler : public rtos::task<>
 {
 	
 private:
-	static constexpr size_t MAX_N_EVENT_SOURCES = 10;
+	static constexpr unsigned int MAX_N_EVENT_SOURCES = 10;
 	
 private:
 	// Array of EventSource pointers.
