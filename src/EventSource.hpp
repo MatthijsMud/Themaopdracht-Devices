@@ -11,7 +11,7 @@ public:
 	virtual void poll() = 0;
 	
 public:
-	EventSource();
+	EventSource()=default;
 
 protected:
 	~EventSource();
