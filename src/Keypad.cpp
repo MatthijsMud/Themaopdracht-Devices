@@ -24,7 +24,7 @@ void Keypad::poll()
 	if(keypad.char_available())
 	{
 		pressedKey = keypad.getc();
-		hwlib::cout << pressedKey << "\n";
+		hwlib::cout << "[" __FILE__ "]: " << pressedKey << "\n";
 		
 		for (unsigned int i=0; i < listenerCount; ++i)
 		{
