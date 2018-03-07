@@ -16,7 +16,7 @@ public:
 	
 protected:
 	// You should not delete listeners through an interface.
-	~KeypadListener();
+	~KeypadListener() = default;
 };
 
 

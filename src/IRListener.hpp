@@ -18,7 +18,7 @@ public:
 	
 protected:
 	// Disallow the release of memory through a listener pointer.
-	~IRListener();
+	~IRListener() = default;
 };
 
 #endif // IR_LISTENER_HPP
