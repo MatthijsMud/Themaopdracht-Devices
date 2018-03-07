@@ -4,6 +4,7 @@
 
 #include "EventHandler.hpp"
 #include "Keypad.hpp"
+#include "GameController.hpp"
 
 int main()
 {
@@ -33,6 +34,9 @@ int main()
 	// Multiply by 1000 to convert from microseconds to milliseconds.
 	EventHandler eventHandler{ 100 * 1'000};
 	eventHandler.addEventSource(keypad);
+	
+	GameController gameController{};
+	keypad.addListener(gameController);
 	
 	rtos::run();
 	return 0;
