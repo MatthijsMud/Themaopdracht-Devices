@@ -8,7 +8,18 @@
 class GameController : public rtos::task<>, public KeypadListener, public IRListener
 {
 private:
+	//! Indicates the game should start.
 	rtos::flag start;
+
+private:
+	//! Time to wait after receiving start signal to actually start.
+	//! Used to give the players time to separate.
+	rtos::timer countDownTime;
+	//! Counts down once the game starts and will notify the game has ended.
+	rtos::timer gameTime;
+
+private:
+	rtos::channel<unsigned char, 4> keyPresses;
 
 public:
 	GameController();
@@ -17,6 +28,16 @@ public:
 private:
 	void main() override;
 	
+private:
+	//! 
+	void waitForStartCommand();
+
+private:
+	void waitForCountDownEnd();
+	
+private:
+	void startGame();
+
 public:
 	void messageReceived(const Message & message) override;
 
