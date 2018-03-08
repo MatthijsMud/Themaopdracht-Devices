@@ -41,9 +41,6 @@ char key2 = '0';
           Weapon = WaitForKeypress('1');
           playermessage.setData(Weapon);
         }
-        if(MessageReceived.read().isStartMessage()){
-          //StartGame
-        };
       }
     }
   }
