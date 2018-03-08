@@ -8,13 +8,7 @@ public:
 	Message();
 	// Construct a message from received databits.
 	explicit Message(uint16_t internalMessage);
-<<<<<<< HEAD
-	uint16_t getMessage() const;
-	void SetPlayer(int player);
-	void SetData(int weapon);
-	void SetTime(int time);
-	void StartMessage();
-=======
+
 	// Allow copying of a message, as it is basically a plain old datatype.
 	Message(const Message & other) = default;
 	Message & operator= (const Message & other) = default;
@@ -44,7 +38,6 @@ public:
 	void setStartMessage();
 	//! Whether the message is a start command.
 	bool isStartMessage() const;
->>>>>>> 098e48d25ff5beb3dd2a218ecb70d04f007eeb7a
 
 private:
 	uint16_t internalMessage = 1 << 15;
