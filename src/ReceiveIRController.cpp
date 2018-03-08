@@ -1,7 +1,7 @@
 #include "ReceiveIRController.hpp"
 #include "IR_Receiver.hpp"
 
-bool getMessageIndex(const uint16_t theMessage, int index){ // index starts at 0
+bool ReceiveIRController::getMessageIndex(const uint16_t theMessage, int index){ // index starts at 0
 	return ( (theMessage >> index) & 1 ) == 1;
 }
 
@@ -14,44 +14,39 @@ bool ReceiveIRController::checkChecksum(const uint16_t theMessage){
 }
 
 void ReceiveIRController::addListener(IRListener & theListener){
+	hwlib::cout << "Registering listener\n";
 	registeredListeners[listenerCount++] = &theListener;
+	hwlib::cout << "Registered listener\n";
 }
 
 void ReceiveIRController::notifyListeners(uint16_t theMessage){
 	if (theMessage != 0){
 		for (int i = 0; i < listenerCount; i++){
-			registeredListeners[i] -> messageReceived(theMessage);
+			registeredListeners[i] -> messageReceived(
+				Message{theMessage}
+			);
 		}
 	}
 }
 
-uint16_t bitsToMessage(uint64_t theBits){
+uint16_t ReceiveIRController::bitsToMessage(uint64_t theBits){
 	uint16_t returnMessage = 0;
-	for (i = 0; i < 16; i+=3 ){
-		( (theBits & 7) == 1 ? 0 : 1 ) &= returnMessage;
-		returnMessage << 1;
-		theBits >> 3;
+	for (int i = 0; i < 16; i+=3 ){
+		returnMessage &= ( (theBits & 7) == 1 ? 0 : 1 );
+		returnMessage = returnMessage << 1;
+		theBits = theBits >> 3;
 	}
-	if checkChecksum(returnMessage){
+	if(checkChecksum(returnMessage)){
 		return returnMessage;	
-	} else {
-		return 0;
 	}
-	
+	return 0;
 }
 
 void ReceiveIRController::main(){
-    
-	// kill the watchdog
-	WDT->WDT_MR = WDT_MR_WDDIS;
-   
-	// wait for the PC console to start
-	hwlib::wait_ms( 500 );
-
-	IR_Receiver ir_receiver();
+	IR_Receiver ir_receiver{};
 
 	rtos::timer timeOut ( this, "timeOut");
-	rtos::clock bitDelay ( this, 800'000, "bitDelay");
+	rtos::clock bitDelay ( this, 800 , "bitDelay");
 	rtos::timer repeatDelay ( this, "repeatDelay");
 
 	uint64_t currentBits = 0;
@@ -59,15 +54,17 @@ void ReceiveIRController::main(){
 	bool isRepeating;
 
 	for(;;){
-		timeOut.set();
-		repeatDelay.set();
-		rtos::waitable result = wait(this, timeOut + bitDelay );
+		timeOut.set( 4000 );
+		repeatDelay.set( 3000 );
+		rtos::event result = wait( timeOut + bitDelay );
 		if (result == bitDelay){
-			(currentBits << 1) &= ir_receiver::getValue();
+			//hwlib::cout << "Bit receive " << ir_receiver.getValue() << "\n";
+			currentBits = (currentBits << 1) & ir_receiver.getValue();
 			bitCount++;
 		}
 		if (result == repeatDelay){
 			isRepeating = true;
+			hwlib::cout << "Message repeating\n";
 		}
 		if (result == timeOut){
 			isRepeating = false;
@@ -81,4 +78,5 @@ void ReceiveIRController::main(){
 			currentBits = 0;
 		}
 	}
+
 }

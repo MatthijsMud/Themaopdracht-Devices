@@ -18,6 +18,7 @@ void GameController::main()
 		waitForCountDownEnd();
 		startGame();
 	}
+
 }
 
 void GameController::waitForStartCommand()
@@ -71,7 +72,7 @@ void GameController::startGame()
 
 void GameController::messageReceived(const Message & message)
 {
-	
+	hwlib::cout << "Received : " << message.getMessage() << "\n";
 }
 
 void GameController::onKeyPress(unsigned char key)

@@ -3,27 +3,16 @@
 #include <stdint.h>
 #include "hwlib.hpp"
 
-class Led
-{
-public:
-  Led(int p);
-  void on();
-  void off();
+class Led{
+	public:
+		Led(int p); // assigned nu p niet correct
+		void on();
+		void off();
 
-
-
-private:
-int pin = 0;
-hwlib::target::pin_out led1 = hwlib::target::pin_out(1, pin);
+	private:
+		int pin = 6;
+		hwlib::target::d2_36kHz led1{};
 };
 
 #endif // DEVICES_LED_HPP
-Led::Led(int p){
-  pin = p;
-}
-void Led::on(){
-  led1.set(1);
-};
-void Led::off(){
-  led1.set(0);
-};
+

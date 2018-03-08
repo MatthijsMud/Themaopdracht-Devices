@@ -6,7 +6,7 @@ class Message
 {
 public:
 	explicit Message(uint16_t internalMessage);
-	uint16_t getMessage();
+	uint16_t getMessage() const;
 	void SetPlayer(int player);
 	void SetData(int weapon);
 	void SetTime(int time);

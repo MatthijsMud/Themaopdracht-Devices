@@ -11,13 +11,13 @@ class SendIRController : public rtos::task<> {
 	private :
 		void main();
 		rtos::timer SendIRTimer{this, "SendIRTimer"};
-		Led led{27};
+		Led led{6};
 
 	public :
 
 		rtos::channel< uint16_t, 1 > MessageChannel{this, "MessageChannel" };
 		void RequestSend(uint16_t incommingMessage);
-		SendIRController() {}
+		SendIRController(): rtos::task<>{"Test2"} {}
 
 };
 

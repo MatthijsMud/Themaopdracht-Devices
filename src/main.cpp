@@ -5,12 +5,22 @@
 #include "EventHandler.hpp"
 #include "Keypad.hpp"
 #include "GameController.hpp"
+#include "ReceiveIRController.hpp"
+#include "SendIRController.hpp"
 
 int main()
 {
+
+	
 	// Prevent restarting of the application by disabling the watchdog.
 	WDT->WDT_MR = WDT_MR_WDDIS;
-	
+
+	// wait for the PC console to start
+
+	hwlib::wait_ms( 500 );
+	int curMessage = 0;
+
+
 	// Initialization of the keypad.
 	namespace target = hwlib::target;
 	// The pins are named after the button representation. Some characters on
@@ -29,15 +39,40 @@ int main()
 	hwlib::port_in_from_pins cols{ col_147_, col_2580, col_369_, col_ABCD };
 	
 	Keypad keypad{rows, cols};
+
+	ReceiveIRController receiveIRController{};
+	SendIRController sendIRController{};
+
 	//keypad.addListener();
 	
 	// Multiply by 1000 to convert from microseconds to milliseconds.
 	EventHandler eventHandler{ 100 * 1'000};
 	eventHandler.addEventSource(keypad);
-	
+	hwlib::cout << "Test print " << curMessage++ << "\n";
 	GameController gameController{};
+	hwlib::cout << "Test print " << curMessage++ << "\n";
+
+
 	keypad.addListener(gameController);
-	
+	//hwlib::cout << "Test print " << curMessage++ << "\n";
+	receiveIRController.addListener(gameController);
+	//receiveIRController.addListener()
+
+	class testTask : public rtos::task<>{
+		SendIRController &theController;
+	public:
+		testTask(SendIRController &theController):rtos::task<>{"Test"}, theController{theController} {}
+		void main(){
+			for(;;){
+				theController.RequestSend( 65535 );
+				hwlib::wait_ms( 6000 );
+			}
+		}
+	};
+
+	testTask theTask{ sendIRController };
 	rtos::run();
+
+
 	return 0;
 }

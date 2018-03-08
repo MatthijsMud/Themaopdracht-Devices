@@ -23,6 +23,6 @@ void Message::RecalcControl(){
 	}
 }
 
-uint16_t Message::getMessage(){
+uint16_t Message::getMessage() const{
 	return internalMessage;
 }

@@ -4,6 +4,7 @@
 #include <rtos.hpp>
 #include "KeypadListener.hpp"
 #include "IRListener.hpp"
+#include "Message.hpp"
 
 class GameController : public rtos::task<>, public KeypadListener, public IRListener
 {
