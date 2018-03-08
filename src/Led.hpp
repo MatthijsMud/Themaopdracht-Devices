@@ -13,13 +13,12 @@ public:
 
 
 private:
-int pin = 0;
-hwlib::target::pin_out led1 = hwlib::target::pin_out(1, pin);
+//int pin = 0;
+hwlib::target::pin_out led1;// = hwlib::target::pin_out(1, pin);
 };
 
 #endif // DEVICES_LED_HPP
-Led::Led(int p){
-  pin = p;
+Led::Led(int p):led1(1, p){
 }
 void Led::on(){
   led1.set(1);
