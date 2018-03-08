@@ -10,8 +10,8 @@
 
 # Listing of the files which should be compiled for this project. Don't forget
 # to add any newly created file to this listing (if it needs to get compiled).
-SOURCES := Keypad.cpp EventHandler.cpp GameController.cpp GameParameterController.cpp SendIRController.cpp 
-HEADERS := Keypad.hpp EventHandler.hpp GameController.hpp EventSource.hpp KeypadListener.hpp IRListener.hpp
+SOURCES := Keypad.cpp EventHandler.cpp GameParameterController.cpp GameController.cpp ReceiveIRController.cpp IR_Receiver.cpp Message.cpp SendIRController.cpp Led.cpp
+HEADERS := Keypad.hpp EventHandler.hpp GameParameterController.hpp GameController.hpp ReceiveIRController.hpp IR_Receiver.hpp Message.hpp SendIRController.hpp Led.hpp EventSource.hpp KeypadListener.hpp IRListener.hpp   
 
 # Paths in which the compiler will search for files that are included.
 # This to avoid very long include paths.
