@@ -17,7 +17,7 @@ class SendIRController : public rtos::task<> {
 
 		rtos::channel< uint16_t, 1 > MessageChannel{this, "MessageChannel" };
 		void RequestSend(uint16_t incommingMessage);
-		SendIRController() {};
+		SendIRController();
 
 };
 

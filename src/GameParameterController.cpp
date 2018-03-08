@@ -1,7 +1,8 @@
 #include "GameParameterController.hpp"
 
-GameParameterController::GameParameterController():
-rtos::task<>{ "GameParameterController" }
+GameParameterController::GameParameterController(SendIRController& sendIR):
+rtos::task<>{ "GameParameterController" },
+sendIR{sendIR}
 {}
 
 void GameParameterController::main(){
@@ -13,38 +14,36 @@ char key2 = '0';
     if(WaitForKeypress('A')){
       //TO-DO show on screen
       key1 = WaitForKeypress('Q');
-      key2= WaitForKeypress('Q');
-      player = key;
+      key2 = WaitForKeypress('Q');
+      Player = (int)key1;
       if(std::isdigit(key2)){
-          Player = (int)key2
+          Player = (int)key2;
       }
 
      //1 stands for any numeric value
-      playermessage.SetPlayer(Player);
+      playermessage.setPlayer(Player);
       if(Player == 0){
-        if(WaitForKeypress('C')){
-          GameTime = (int)WaitForKeypress('1');
-
-          wait(KeyPresses);
-          char temp = KeyPresses.read();
-
-          if (std::isdigit(temp)){
-            GameTime = GameTime*10 + (int)temp;
-            if(WaitForKeypress('*')){
-              SendCommand();
-            }
+        if(WaitForKeypress('C') || key2 == 'C'){
+          key1 = WaitForKeypress('Q');
+          key2 = WaitForKeypress('Q');
+          GameTime = (int)key1;
+          if(std::isdigit(key2)){
+              GameTime = (int)key2;
           }
-          if(temp == '*'){
-            SendCommand();
+          gameMastermessage.setTime(GameTime);
+          while(WaitForKeypress('*') || key2 == '*'){
+            SendCommand(gameMastermessage);
           }
         }
       }
-
       else if(Player > 0){
         if(WaitForKeypress('C')){
           Weapon = WaitForKeypress('1');
           playermessage.setData(Weapon);
         }
+        if(MessageReceived.read().isStartMessage()){
+          //StartGame
+        };
       }
     }
   }
@@ -71,7 +70,7 @@ void GameParameterController::WaitForMessage(){
 
 char GameParameterController::WaitForKeypress(unsigned char WaitFor){
   char key = KeyPresses.read();
-  char last = 'x'
+  char last = 'x';
 
   if(key == WaitFor){
     return '1';
@@ -84,15 +83,15 @@ char GameParameterController::WaitForKeypress(unsigned char WaitFor){
     return  key;
   }
 
-  else if{
+  else{
     return key;
   }
 }
 
 
-void GameParameterController::SendCommand(Message Message){
-  uint16_t mes  = Message.getMessage();
-  SendIRController::RequestSend(mes);
+void GameParameterController::SendCommand(Message message){
+  uint16_t mes  = message.getMessage();
+  sendIR.RequestSend(mes);
 }
 
 int GameParameterController::GetWeapon(){
