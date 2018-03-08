@@ -1,10 +1,14 @@
 #include "SendIRController.hpp"
 
+SendIRController::SendIRController():
+rtos::task<>{ "SendIRController" }
+{}
+
 void SendIRController::main(){
   for(;;){
   uint16_t message = MessageChannel.read();
   hwlib::cout << "Sending : " << message << "\n";
- 
+
     for (int j = 0; j < 2; j++){
       for(int i = 0; i < 16; i++){
         if(((message >> (15-i % 16)) & 1) == 1){
@@ -28,7 +32,7 @@ void SendIRController::main(){
       }
       SendIRTimer.set(3000);
       wait(SendIRTimer);
-    } 
+    }
   }
   hwlib::cout << "Returned :(\n";
 }

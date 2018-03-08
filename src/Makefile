@@ -5,19 +5,19 @@
 # (c) Wouter van Ooijen (www.voti.nl) 2016
 #
 # This file is in the public domain.
-# 
+#
 #############################################################################
 
 # Listing of the files which should be compiled for this project. Don't forget
 # to add any newly created file to this listing (if it needs to get compiled).
-SOURCES := Keypad.cpp EventHandler.cpp GameController.cpp
+SOURCES := Keypad.cpp EventHandler.cpp GameController.cpp GameParameterController.cpp SendIRController.cpp 
 HEADERS := Keypad.hpp EventHandler.hpp GameController.hpp EventSource.hpp KeypadListener.hpp IRListener.hpp
 
 # Paths in which the compiler will search for files that are included.
 # This to avoid very long include paths.
-SEARCH  := 
+SEARCH  :=
 
-# Indacates we want to use a heap in our application.Please note that chosen 
+# Indacates we want to use a heap in our application.Please note that chosen
 # implementation is very simple, and does not support the release of memory.
 # It is only needed for RTOS, which invokes new.
 HEAP    := BMPTK
