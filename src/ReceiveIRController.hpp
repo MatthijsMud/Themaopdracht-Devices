@@ -5,6 +5,7 @@
 #include "rtos.hpp"
 
 #include "IRListener.hpp"
+#include "IR_Receiver.hpp"
 #include "Message.hpp"
 
 class ReceiveIRController : public rtos::task<> {
@@ -17,14 +18,17 @@ class ReceiveIRController : public rtos::task<> {
 		IRListener * registeredListeners [10];
 
 		void main();
-		bool checkChecksum(const uint16_t theMessage);
+		
 		void notifyListeners(const uint16_t theMessage);
 
 		uint16_t bitsToMessage(uint64_t theBits);
 		bool getMessageIndex(const uint16_t theMessage, int index);
+
+		bool isStartbit(rtos::clock &bitDelay, IR_Receiver &ir_receiver);
 	public :
 
-		ReceiveIRController() : rtos::task<>{"Test3"} {}
+		bool checkChecksum(const uint16_t theMessage);
+		ReceiveIRController() : rtos::task<>{1,"Test3"} {}
 		void addListener(IRListener & theListener);
 };
 

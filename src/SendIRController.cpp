@@ -4,7 +4,6 @@ void SendIRController::main(){
   for(;;){
   uint16_t message = MessageChannel.read();
   hwlib::cout << "Sending : " << message << "\n";
- 
     for (int j = 0; j < 2; j++){
       for(int i = 0; i < 16; i++){
         if(((message >> (15-i % 16)) & 1) == 1){
@@ -15,6 +14,7 @@ void SendIRController::main(){
           led.off();
           SendIRTimer.set(800);
           wait(SendIRTimer);
+          hwlib::cout << "110";
         }
         else if(((message >> (15-i % 16)) & 1) == 0){
           led.on();
@@ -24,8 +24,10 @@ void SendIRController::main(){
           led.off();
           SendIRTimer.set(1600);
           wait(SendIRTimer);
+          hwlib::cout << "001";
         }
       }
+      hwlib::cout << "\n\n";
       SendIRTimer.set(3000);
       wait(SendIRTimer);
     } 

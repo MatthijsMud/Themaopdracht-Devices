@@ -1,5 +1,5 @@
 #include "ReceiveIRController.hpp"
-#include "IR_Receiver.hpp"
+
 
 bool ReceiveIRController::getMessageIndex(const uint16_t theMessage, int index){ // index starts at 0
 	return ( (theMessage >> index) & 1 ) == 1;
@@ -42,6 +42,7 @@ uint16_t ReceiveIRController::bitsToMessage(uint64_t theBits){
 	return 0;
 }
 
+
 void ReceiveIRController::main(){
 	IR_Receiver ir_receiver{};
 
@@ -49,34 +50,39 @@ void ReceiveIRController::main(){
 	rtos::clock bitDelay ( this, 800 , "bitDelay");
 	rtos::timer repeatDelay ( this, "repeatDelay");
 
+	rtos::clock checkDelay ( this, 200 , "checkDelay");
+
 	uint64_t currentBits = 0;
-	auto bitCount = 0;
-	bool isRepeating;
+	uint64_t repeatBits = 0;
 
 	for(;;){
-		timeOut.set( 4000 );
-		repeatDelay.set( 3000 );
-		rtos::event result = wait( timeOut + bitDelay );
-		if (result == bitDelay){
-			//hwlib::cout << "Bit receive " << ir_receiver.getValue() << "\n";
-			currentBits = (currentBits << 1) & ir_receiver.getValue();
-			bitCount++;
+		wait( checkDelay );
+		if( ir_receiver.getValue() ){
+			timeOut.set( 3000 );
+			repeatDelay.set( 4000 );
+			//hwlib::cout << "Received startbit";
+			currentBits = 1;
+			for(int i = 0; i < 47; i++){
+				currentBits = (currentBits << 1) | ir_receiver.getValue();
+				wait( bitDelay );
+			}
+			wait( repeatDelay );
+			for(int i = 0; i < 48; i++){
+				repeatBits = (repeatBits << 1) | ir_receiver.getValue();
+				wait( bitDelay );
+			}
+			hwlib::cout << currentBits << "\n" << repeatBits << "\n";
+			/*bool result1 = checkChecksum( bitsToMessage(currentBits) );
+			//hwlib::cout << "Message : " << currentBits << "\n";
+			for(int i = 0; i<48; i++){
+				hwlib::cout << ( (currentBits >> i) & 1 );
+			}
+			hwlib::cout << "\n" << result1 << "\n";
+			notifyListeners( result1 ? bitsToMessage(currentBits) : bitsToMessage(repeatBits));*/
+			wait( timeOut );
+			//bool result2 = checkChecksum( bitsToMessage(repeatBits) );
 		}
-		if (result == repeatDelay){
-			isRepeating = true;
-			hwlib::cout << "Message repeating\n";
-		}
-		if (result == timeOut){
-			isRepeating = false;
-			bitCount = 0;
-			currentBits = 0;
-		}
-		if (bitCount == 16 && isRepeating){
-			notifyListeners( bitsToMessage(currentBits) );
-			isRepeating = false;
-			bitCount = 0;
-			currentBits = 0;
-		}
+
 	}
 
 }

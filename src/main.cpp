@@ -57,20 +57,20 @@ int main()
 	//hwlib::cout << "Test print " << curMessage++ << "\n";
 	receiveIRController.addListener(gameController);
 	//receiveIRController.addListener()
-
+	/*
 	class testTask : public rtos::task<>{
 		SendIRController &theController;
 	public:
 		testTask(SendIRController &theController):rtos::task<>{"Test"}, theController{theController} {}
 		void main(){
 			for(;;){
-				theController.RequestSend( 65535 );
+				theController.RequestSend( 65504 );
 				hwlib::wait_ms( 6000 );
 			}
 		}
 	};
 
-	testTask theTask{ sendIRController };
+	testTask theTask{ sendIRController };*/
 	rtos::run();
 
 
