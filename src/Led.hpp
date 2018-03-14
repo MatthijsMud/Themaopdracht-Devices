@@ -15,4 +15,3 @@ class Led{
 };
 
 #endif // DEVICES_LED_HPP
-

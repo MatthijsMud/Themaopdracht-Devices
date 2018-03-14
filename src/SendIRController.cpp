@@ -1,5 +1,9 @@
 #include "SendIRController.hpp"
 
+SendIRController::SendIRController():
+rtos::task<>{ "SendIRController" }
+{}
+
 void SendIRController::main(){
   for(;;){
   uint16_t message = MessageChannel.read();
@@ -30,7 +34,7 @@ void SendIRController::main(){
       hwlib::cout << "\n\n";
       SendIRTimer.set(3000);
       wait(SendIRTimer);
-    } 
+    }
   }
   hwlib::cout << "Returned :(\n";
 }

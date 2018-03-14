@@ -1,10 +1,12 @@
 #include "GameController.hpp"
+#include "GameParameterController.hpp"
 
-GameController::GameController():
+GameController::GameController(GameParameterController & parameters):
 	rtos::task<>{ "GameController" },
-	start{ this, "startFlag" },
+	parameters{parameters},
 	countDownTime{ this, "countDownTime" },
 	gameTime{ this, "gameEnd" },
+	messages{ this, "messages" },
 	keyPresses{ this, "keyPresses" }
 {
 	
@@ -15,18 +17,30 @@ void GameController::main()
 	while(true)
 	{
 		waitForStartCommand();
+		
+		parameters.suspend();
+		
 		waitForCountDownEnd();
 		startGame();
+		
+		parameters.resume();
 	}
-
 }
 
 void GameController::waitForStartCommand()
 {
 	hwlib::cout << "[" __FILE__ "]: Waiting for start command.\n";
-	while(wait() != start)
+	while(true)
 	{
-		continue;
+		const auto & event = wait();
+		if (event == messages)
+		{
+			Message message = messages.read();
+			if(message.isStartMessage())
+			{
+				break;
+			}
+		}
 	}
 	hwlib::cout << "[" __FILE__ "]: Received start command.\n";
 }
@@ -72,15 +86,10 @@ void GameController::startGame()
 
 void GameController::messageReceived(const Message & message)
 {
-	hwlib::cout << "Received : " << message.getMessage() << "\n";
+	messages.write(message);
 }
 
 void GameController::onKeyPress(unsigned char key)
 {
-	if (key == 'A')
-	{
-		start.set();
-	} else {
-		keyPresses.write(key);
-	}
+	keyPresses.write(key);
 }

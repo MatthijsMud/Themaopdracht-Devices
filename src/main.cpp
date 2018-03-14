@@ -4,6 +4,7 @@
 
 #include "EventHandler.hpp"
 #include "Keypad.hpp"
+#include "GameParameterController.hpp"
 #include "GameController.hpp"
 #include "ReceiveIRController.hpp"
 #include "SendIRController.hpp"
@@ -18,8 +19,6 @@ int main()
 	// wait for the PC console to start
 
 	hwlib::wait_ms( 500 );
-	int curMessage = 0;
-
 
 	// Initialization of the keypad.
 	namespace target = hwlib::target;
@@ -48,13 +47,12 @@ int main()
 	// Multiply by 1000 to convert from microseconds to milliseconds.
 	EventHandler eventHandler{ 100 * 1'000};
 	eventHandler.addEventSource(keypad);
-	hwlib::cout << "Test print " << curMessage++ << "\n";
-	GameController gameController{};
-	hwlib::cout << "Test print " << curMessage++ << "\n";
-
-
+	
+	GameParameterController parameters{sendIRController};
+	
+	GameController gameController{parameters};
 	keypad.addListener(gameController);
-	//hwlib::cout << "Test print " << curMessage++ << "\n";
+	
 	receiveIRController.addListener(gameController);
 	//receiveIRController.addListener()
 	/*
