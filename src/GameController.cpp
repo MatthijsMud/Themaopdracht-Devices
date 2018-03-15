@@ -86,6 +86,7 @@ void GameController::startGame()
 
 void GameController::messageReceived(const Message & message)
 {
+	hwlib::cout <<"[" __FILE__ "]: Received a message" << message.getMessage();
 	messages.write(message);
 }
 

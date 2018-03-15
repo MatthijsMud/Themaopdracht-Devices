@@ -52,7 +52,10 @@ int main()
 	
 	GameController gameController{parameters};
 	keypad.addListener(gameController);
-	
+
+	//hwlib::cout << "[" << __FILE__ << "]: Checksum result is: " << receiveIRController.checkChecksum( 65504 ) << '\n';
+
+	//hwlib::cout << "[" << __FILE__ << "]: Checksum result is: " << receiveIRController.checkChecksum( 6550 ) << '\n';	
 	receiveIRController.addListener(gameController);
 	//receiveIRController.addListener()
 	
