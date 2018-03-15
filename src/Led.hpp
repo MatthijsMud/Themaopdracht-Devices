@@ -5,13 +5,11 @@
 
 class Led{
 	public:
-		Led(int p); // assigned nu p niet correct
 		void on();
 		void off();
 
 	private:
-		int pin = 6;
-		hwlib::target::d2_36kHz led1{};
+		hwlib::target::d2_36kHz led{};
 };
 
 #endif // DEVICES_LED_HPP
