@@ -58,27 +58,29 @@ void ReceiveIRController::main(){
 	for(;;){
 		wait( checkDelay );
 		if( ir_receiver.getValue() ){
-			timeOut.set( 3000 );
-			repeatDelay.set( 4000 );
-			//hwlib::cout << "Received startbit";
+
+			hwlib::cout << "Received startbit";
 			currentBits = 1;
 			for(int i = 0; i < 47; i++){
 				currentBits = (currentBits << 1) | ir_receiver.getValue();
 				wait( bitDelay );
 			}
+			repeatDelay.set( 3000 );
 			wait( repeatDelay );
 			for(int i = 0; i < 48; i++){
 				repeatBits = (repeatBits << 1) | ir_receiver.getValue();
 				wait( bitDelay );
 			}
-			hwlib::cout << currentBits << "\n" << repeatBits << "\n";
-			/*bool result1 = checkChecksum( bitsToMessage(currentBits) );
+			//hwlib::cout << currentBits << "\n" << repeatBits << "\n";
+			bool result1 = checkChecksum( bitsToMessage(currentBits) );
 			//hwlib::cout << "Message : " << currentBits << "\n";
 			for(int i = 0; i<48; i++){
 				hwlib::cout << ( (currentBits >> i) & 1 );
 			}
-			hwlib::cout << "\n" << result1 << "\n";
-			notifyListeners( result1 ? bitsToMessage(currentBits) : bitsToMessage(repeatBits));*/
+			hwlib::cout << "\n";
+			notifyListeners( result1 ? bitsToMessage(currentBits) : bitsToMessage(repeatBits));
+			timeOut.set( 4000 );
+			
 			wait( timeOut );
 			//bool result2 = checkChecksum( bitsToMessage(repeatBits) );
 		}

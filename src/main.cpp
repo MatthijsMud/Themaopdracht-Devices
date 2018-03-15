@@ -55,7 +55,7 @@ int main()
 	
 	receiveIRController.addListener(gameController);
 	//receiveIRController.addListener()
-	/*
+	
 	class testTask : public rtos::task<>{
 		SendIRController &theController;
 	public:
@@ -68,7 +68,7 @@ int main()
 		}
 	};
 
-	testTask theTask{ sendIRController };*/
+	testTask theTask{ sendIRController };
 	rtos::run();
 
 
