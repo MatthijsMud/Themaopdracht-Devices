@@ -11,7 +11,7 @@ class SendIRController : public rtos::task<> {
 	private :
 		void main();
 		rtos::timer SendIRTimer{this, "SendIRTimer"};
-		Led led{6};
+		Led led{};
 
 	public :
 
