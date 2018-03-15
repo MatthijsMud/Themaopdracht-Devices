@@ -2,6 +2,12 @@
 #define DEVICES_MESSAGE_HPP
 #include <stdint.h>
 
+// Forward declaration.
+namespace hwlib
+{
+	class ostream;
+}
+
 class Message
 {
 public:
@@ -43,5 +49,11 @@ private:
 	uint16_t internalMessage = 1 << 15;
 	void calculateChecksum();
 };
+
+//! 
+//!
+//! @param lhs
+//! @param rhs 
+hwlib::ostream & operator<<(hwlib::ostream & lhs, const Message & rhs);
 
 #endif // DEVICES_MESSAGE_HPP

@@ -6,6 +6,8 @@ GameController::GameController(GameParameterController & parameters):
 	parameters{parameters},
 	countDownTime{ this, "countDownTime" },
 	gameTime{ this, "gameEnd" },
+	cooldownTime{ this, "cooldown" },
+	invulnerabilityTime{ this, "invulerability" },
 	messages{ this, "messages" },
 	keyPresses{ this, "keyPresses" }
 {
@@ -62,8 +64,14 @@ void GameController::startGame()
 	hwlib::cout << "[" __FILE__ "]: Game started.\n";
 	// Key presses from before the game have started are irrelevant.
 	keyPresses.clear();
+	messages.clear();
+	
 	// TODO: Make the time the game goes on for variable.
 	gameTime.set(5 * 1'000 * 1'000);
+	
+	// Resetting th state so the player starts in a save way.
+	canShoot = true;
+	isVulnerable = true;
 	
 	bool running = true;
 	while(running)
@@ -73,15 +81,54 @@ void GameController::startGame()
 		if (event == keyPresses)
 		{
 			unsigned char key = keyPresses.read();
-			hwlib::cout << "[" __FILE__ "]: Keypress \"" << key << "\"\n";
+			switch (key) {
+				case '*': shoot(); break;
+				default: hwlib::cout << "[" __FILE__ "] Key " << key << ".\n"; break;
+			}
+			
+		} else if (event == messages) {
+			Message message = messages.read();
+			
+			
+		} else if (event == cooldownTime) {
+			canShoot = true;
+			hwlib::cout << "[" __FILE__ "] Can shoot again.\n";
+			
+		} else if (event == invulnerabilityTime) {
+			isVulnerable = true;
+			hwlib::cout << "[" __FILE__ "] Is vulnerable again.\n";
+			
 		} else if (event == gameTime) {
 			running = false;
+			
 		} else {
 			// Discard the event, as we were not waiting for it.
 			hwlib::cout << "[" __FILE__ "]: -\n";
 		}
 	}
 	hwlib::cout << "[" __FILE__ "]: Game ended.\n";
+}
+
+void GameController::shoot()
+{
+	if (canShoot)
+	{
+		hwlib::cout << "[" __FILE__ "] Firing laser.\n";
+		canShoot = false;
+		// TODO: Replace with variable time.
+		cooldownTime.set(1);
+	}
+}
+
+void GameController::handleHit()
+{
+	if (isVulnerable)
+	{
+		hwlib::cout << "[" __FILE__ "] Got hit.\n";
+		isVulnerable = false;
+		// TODO: 
+		invulnerabilityTime.set(1);
+	}
 }
 
 void GameController::messageReceived(const Message & message)

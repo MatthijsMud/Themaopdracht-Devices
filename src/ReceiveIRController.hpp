@@ -20,14 +20,12 @@ class ReceiveIRController : public rtos::task<> {
 		void main();
 		
 		void notifyListeners(const uint16_t theMessage);
-
 		uint16_t bitsToMessage(uint64_t theBits);
-		bool getMessageIndex(const uint16_t theMessage, int index);
-
+		bool checkChecksum(const uint16_t theMessage);
+		int getMessageIndex(const uint16_t theMessage, int index);
 		bool isStartbit(rtos::clock &bitDelay, IR_Receiver &ir_receiver);
 	public :
 
-		bool checkChecksum(const uint16_t theMessage);
 		ReceiveIRController() : rtos::task<>{1,"Test3"} {}
 		void addListener(IRListener & theListener);
 };
