@@ -1,5 +1,7 @@
 #include "Message.hpp"
 
+#include <hwlib.hpp>
+
 Message::Message():
 // Set the startbit of the message by default.
 internalMessage{1 << 15}
@@ -69,3 +71,15 @@ void Message::calculateChecksum(){
 	}
 }
 
+
+hwlib::ostream & operator<< (hwlib::ostream & lhs, const Message & rhs)
+{
+	uint16_t data = rhs.getMessage();
+	lhs << "Message{";
+	for (unsigned int i=16; i; --i)
+	{
+		lhs << ((data >> (i-1)) & 1); 
+	}
+	lhs << "}";
+	return lhs;
+}
