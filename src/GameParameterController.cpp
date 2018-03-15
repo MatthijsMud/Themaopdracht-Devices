@@ -8,27 +8,32 @@ sendIR{sendIR}
 void GameParameterController::main(){
 char key1 = '0';
 char key2 = '0';
+  screen.initScreen();
   //TO-DO show initial screen
   //wait for user to input "A"
   while(true){
     if(WaitForKeypress('A')){
-      //TO-DO show on screen
-      key1 = WaitForKeypress('Q');
-      key2 = WaitForKeypress('Q');
-      Player = (int)key1;
-      if(std::isdigit(key2)){
-          Player = (int)key2;
-      }
 
+      screen.gameParameterA();
+
+      key1 = WaitForKeypress('Q');
+
+      Player = key1 - '0';
+      screen.gameParameterACustom(Player);
+      key2 = WaitForKeypress('Q');
+      if(std::isdigit(key2)){
+          Player = (int)(key1 - '0')*10 + (int)(key2 - '0');
+      }
+      screen.gameParameterACustom(Player);
      //1 stands for any numeric value
       playermessage.setPlayer(Player);
       if(Player == 0){
         if(WaitForKeypress('C') || key2 == 'C'){
           key1 = WaitForKeypress('Q');
           key2 = WaitForKeypress('Q');
-          GameTime = (int)key1;
+          GameTime = key1 - '0';
           if(std::isdigit(key2)){
-              GameTime = (int)key2;
+              GameTime = (int)(key1 - '0')*10 + (int)(key2 - '0');
           }
           gameMastermessage.setTime(GameTime);
           while(WaitForKeypress('*') || key2 == '*'){
@@ -37,9 +42,30 @@ char key2 = '0';
         }
       }
       else if(Player > 0){
-        if(WaitForKeypress('C')){
-          Weapon = WaitForKeypress('1');
+        if(WaitForKeypress('B') || key2 == 'B'){
+          screen.gameParameterB();
+          key1 = WaitForKeypress('Q');
+
+          Weapon = (int)key1-'0';
+          screen.gameParameterBCustom(Weapon);
           playermessage.setData(Weapon);
+          key2 = WaitForKeypress('Q');
+          if(std::isdigit(key2)){
+              Weapon = (int)(key1 - '0')*10 + (int)(key2 - '0');
+          }
+          playermessage.setData(Weapon);
+          screen.gameParameterBCustom(Weapon);
+          key1 = WaitForKeypress();
+        label:
+          if(key1 == '*'){
+            suspend();
+          }
+          else if (key1 == '#'){
+            break;
+          }
+          else{
+            goto label;
+          }
         }
       }
     }
@@ -48,6 +74,7 @@ char key2 = '0';
 
 void GameParameterController::onKeyPress(unsigned char keypad){
   KeyPresses.write(keypad);
+  hwlib::cout << keypad;
 }
 
 void GameParameterController::messageReceived(const Message & message){
@@ -73,7 +100,7 @@ char GameParameterController::WaitForKeypress(unsigned char WaitFor){
     return '1';
   }
   else if(std::isdigit(last) && WaitFor == 'Q' && std::isdigit(key)){
-    return (int)last*10 + (int)key;
+    return key;
   }
   else if(WaitFor == 'Q' && std::isdigit(key)){
     last = key;
