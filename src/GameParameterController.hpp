@@ -6,12 +6,13 @@
 #include "KeypadListener.hpp"
 #include "IRListener.hpp"
 #include "SendIRController.hpp"
+#include "Screen.hpp"
 #include <cctype>
 
 class GameParameterController : public rtos::task<>, public KeypadListener, public IRListener{
 	private :
     void main();
-    char WaitForKeypress();
+    char WaitForKeypress(unsigned char WaitFor = '/');
     int Weapon = 0;
     int Player = 0;
 		int GameTime = 0;
@@ -19,6 +20,7 @@ class GameParameterController : public rtos::task<>, public KeypadListener, publ
 		Message playermessage{0};
 		Message gameMastermessage{0};
 		SendIRController& sendIR;
+		Screen screen{};
 
 	public :
 
@@ -28,7 +30,6 @@ class GameParameterController : public rtos::task<>, public KeypadListener, publ
     void onKeyPress(unsigned char keypad) override;
 		void messageReceived(const Message & message) override;
 		void WaitForMessage();
-		char WaitForKeypress(unsigned char WaitFor);
     int GetPlayer();
     int GetWeapon();
 
