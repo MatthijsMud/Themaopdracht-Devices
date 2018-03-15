@@ -59,20 +59,23 @@ void ReceiveIRController::main(){
 		wait( checkDelay );
 		if( ir_receiver.getValue() ){
 
-			hwlib::cout << "Received startbit";
+			//hwlib::cout << "Received startbit";
 			currentBits = 1;
 			for(int i = 0; i < 47; i++){
-				currentBits = (currentBits << 1) | ir_receiver.getValue();
 				wait( bitDelay );
+				currentBits = (currentBits << 1) | ir_receiver.getValue();
+				
 			}
 			repeatDelay.set( 3000 );
 			wait( repeatDelay );
 			for(int i = 0; i < 48; i++){
-				repeatBits = (repeatBits << 1) | ir_receiver.getValue();
 				wait( bitDelay );
+				repeatBits = (repeatBits << 1) | ir_receiver.getValue();
+				
 			}
 			//hwlib::cout << currentBits << "\n" << repeatBits << "\n";
 			bool result1 = checkChecksum( bitsToMessage(currentBits) );
+			hwlib::cout <<"[" __FILE__ "] ";
 			//hwlib::cout << "Message : " << currentBits << "\n";
 			for(int i = 0; i<48; i++){
 				hwlib::cout << ( (currentBits >> i) & 1 );
