@@ -71,6 +71,25 @@ void Message::calculateChecksum(){
 	}
 }
 
+bool Message::bit(uint8_t position) const
+{
+	// Message is 16 bits long. Start counting at 0, thus 15 is the max index.
+	return (internalMessage >> (15 - position)) & 1;
+}
+
+bool Message::isValid() const
+{
+	// "true" so the following lines look consistent.
+	return true
+		// Make sure the startbit has been set.
+		&& (bit(0) == true)
+		// The checksum is an exclusive or.
+		&& ((bit(1) != bit( 6)) == bit(11))
+		&& ((bit(2) != bit( 7)) == bit(12))
+		&& ((bit(3) != bit( 8)) == bit(13))
+		&& ((bit(4) != bit( 9)) == bit(14))
+		&& ((bit(5) != bit(10)) == bit(15));
+}
 
 hwlib::ostream & operator<< (hwlib::ostream & lhs, const Message & rhs)
 {

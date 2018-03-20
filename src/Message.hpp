@@ -44,7 +44,14 @@ public:
 	void setStartMessage();
 	//! Whether the message is a start command.
 	bool isStartMessage() const;
+	
+	//! Whether the checksum matches the payload.
+	bool isValid() const;
 
+private:
+	//! Gets the value of the bit at specified postion (counted from the MSB).
+	bool bit(uint8_t position) const;
+	
 private:
 	uint16_t internalMessage = 1 << 15;
 	void calculateChecksum();
