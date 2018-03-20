@@ -41,6 +41,8 @@ void GameController::waitForStartCommand()
 			if(message.isStartMessage())
 			{
 				break;
+			} else {
+				hwlib::cout << "[" __FILE__ "]: Unexpected message: " << message << "\n";
 			}
 		}
 	}
@@ -67,7 +69,7 @@ void GameController::startGame()
 	messages.clear();
 	
 	// TODO: Make the time the game goes on for variable.
-	gameTime.set(5 * 1'000 * 1'000);
+	gameTime.set(5 * 60 * 1'000 * 1'000);
 	
 	// Resetting th state so the player starts in a save way.
 	canShoot = true;
@@ -83,20 +85,20 @@ void GameController::startGame()
 			unsigned char key = keyPresses.read();
 			switch (key) {
 				case '*': shoot(); break;
-				default: hwlib::cout << "[" __FILE__ "] Key " << key << ".\n"; break;
+				default: hwlib::cout << "[" __FILE__ "]: Key " << key << ".\n"; break;
 			}
 			
 		} else if (event == messages) {
 			Message message = messages.read();
-			
+			handleHit();
 			
 		} else if (event == cooldownTime) {
 			canShoot = true;
-			hwlib::cout << "[" __FILE__ "] Can shoot again.\n";
+			hwlib::cout << "[" __FILE__ "]: Can shoot again.\n";
 			
 		} else if (event == invulnerabilityTime) {
 			isVulnerable = true;
-			hwlib::cout << "[" __FILE__ "] Is vulnerable again.\n";
+			hwlib::cout << "[" __FILE__ "]: Is vulnerable again.\n";
 			
 		} else if (event == gameTime) {
 			running = false;
@@ -113,7 +115,7 @@ void GameController::shoot()
 {
 	if (canShoot)
 	{
-		hwlib::cout << "[" __FILE__ "] Firing laser.\n";
+		hwlib::cout << "[" __FILE__ "]: Firing laser.\n";
 		canShoot = false;
 		// TODO: Replace with variable time.
 		cooldownTime.set(1);
@@ -124,7 +126,7 @@ void GameController::handleHit()
 {
 	if (isVulnerable)
 	{
-		hwlib::cout << "[" __FILE__ "] Got hit.\n";
+		hwlib::cout << "[" __FILE__ "]: Got hit.\n";
 		isVulnerable = false;
 		// TODO: 
 		invulnerabilityTime.set(1);
@@ -133,7 +135,6 @@ void GameController::handleHit()
 
 void GameController::messageReceived(const Message & message)
 {
-	hwlib::cout <<"[" __FILE__ "]: Received a message" << message.getMessage();
 	messages.write(message);
 }
 
