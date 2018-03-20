@@ -63,7 +63,10 @@ int main()
 		testTask(SendIRController &theController):rtos::task<>{"Test"}, theController{theController} {}
 		void main(){
 			for(;;){
-				theController.RequestSend( 65504 );
+				Message m{};
+				m.setStartMessage();
+				
+				theController.RequestSend( m.getMessage() );
 				hwlib::wait_ms( 6000 );
 			}
 		}
