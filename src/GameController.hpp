@@ -6,13 +6,17 @@
 #include "IRListener.hpp"
 #include "Message.hpp"
 
-// Forward declaration.
+// Forward declarations.
 class GameParameterController;
+class SendIRController;
 
 class GameController : public rtos::task<>, public KeypadListener, public IRListener
 {
 private:
 	GameParameterController & parameters;
+	
+private:
+	SendIRController & sender;
 	
 private:
 	//! Time to wait after receiving start signal to actually start.
@@ -45,7 +49,7 @@ private:
 	rtos::channel<unsigned char, 4> keyPresses;
 
 public:
-	GameController(GameParameterController & paramters);
+	GameController(GameParameterController & paramters, SendIRController & sender);
 	~GameController() = default;
 
 private:

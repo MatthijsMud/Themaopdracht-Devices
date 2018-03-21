@@ -50,7 +50,7 @@ int main()
 
 	GameParameterController GameParameterController{sendIRController};
 
-	GameController gameController{GameParameterController};
+	GameController gameController{GameParameterController, sendIRController};
 	keypad.addListener(gameController);
 	keypad.addListener(GameParameterController);
 

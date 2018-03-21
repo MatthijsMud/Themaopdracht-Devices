@@ -1,9 +1,11 @@
 #include "GameController.hpp"
 #include "GameParameterController.hpp"
+#include "SendIRController.hpp"
 
-GameController::GameController(GameParameterController & parameters):
+GameController::GameController(GameParameterController & parameters, SendIRController & sender):
 	rtos::task<>{ "GameController" },
 	parameters{parameters},
+	sender{sender},
 	countDownTime{ this, "countDownTime" },
 	gameTime{ this, "gameEnd" },
 	cooldownTime{ this, "cooldown" },
@@ -116,7 +118,15 @@ void GameController::shoot()
 	if (canShoot)
 	{
 		hwlib::cout << "[" __FILE__ "]: Firing laser.\n";
+		
+		Message message{};
+		message.setPlayer(parameters.GetPlayer());
+		message.setData(parameters.GetWeapon());
+		
+		sender.RequestSend(message.getMessage());
+		
 		canShoot = false;
+		
 		// TODO: Replace with variable time.
 		cooldownTime.set(1);
 	}
