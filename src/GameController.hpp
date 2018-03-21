@@ -80,7 +80,7 @@ private:
 private:
 	//! Logic for getting hit.
 	//!
-	void handleHit();
+	void handleHit(Message message);
 
 public:
 	void messageReceived(const Message & message) override;

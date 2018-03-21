@@ -90,7 +90,7 @@ void GameController::startGame()
 			
 		} else if (event == messages) {
 			Message message = messages.read();
-			handleHit();
+			handleHit(message);
 			
 		} else if (event == cooldownTime) {
 			canShoot = true;
@@ -122,11 +122,11 @@ void GameController::shoot()
 	}
 }
 
-void GameController::handleHit()
+void GameController::handleHit(Message message)
 {
 	if (isVulnerable)
 	{
-		hwlib::cout << "[" __FILE__ "]: Got hit.\n";
+		hwlib::cout << "[" __FILE__ "]: Got hit " << message << ".\n";
 		isVulnerable = false;
 		// TODO: 
 		invulnerabilityTime.set(1);
