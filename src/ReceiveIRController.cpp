@@ -1,5 +1,12 @@
 #include "ReceiveIRController.hpp"
 
+ReceiveIRController::ReceiveIRController() :
+	rtos::task<>{"ReceiveIRController"},
+	bitTime{this, "BitTime"}
+{
+	
+}
+
 
 int ReceiveIRController::getMessageIndex(const uint16_t theMessage, int index){ // index starts at 0
 	return ( (theMessage >> (15 - index) ) & 1 );
@@ -20,14 +27,13 @@ void ReceiveIRController::addListener(IRListener & theListener){
 	hwlib::cout << "Registered listener\n";
 }
 
-void ReceiveIRController::notifyListeners(uint16_t theMessage){
-	if (theMessage != 0){
-		for (int i = 0; i < listenerCount; i++){
-			registeredListeners[i] -> messageReceived(
-				Message{theMessage}
-			);
-		}
+void ReceiveIRController::notifyListeners(Message theMessage){
+	for (int i = 0; i < listenerCount; i++){
+		registeredListeners[i] -> messageReceived(
+			theMessage
+		);
 	}
+
 }
 
 uint16_t ReceiveIRController::bitsToMessage(uint64_t theBits){
@@ -50,89 +56,72 @@ uint16_t ReceiveIRController::bitsToMessage(uint64_t theBits){
 	//return 0;
 }
 
+void ReceiveIRController::waitStartBit()
+{
+	while (!receiver.getValue())
+	{
+		// Each bit is made up of 3 parts, to make sure variations can be detected.
+		// Start of bit 1, data bit 1/0 and end of bit 0.
+		// Sampling twice should give some leniency in timing.
+		bitTime.set((BIT_DURATION / 3) / 2);
+		wait(bitTime);
+	}
+}
+
+ReceiveIRController::Bit ReceiveIRController::getBit()
+{
+	// Each bit is made up of 3 parts, to make sure variations can be detected.
+	// Start of bit 1, data bit 1/0 and end of bit 0.
+	uint8_t pattern = 0;
+	for (uint8_t i=0; i<3; ++i)
+	{
+		pattern = ((pattern << 1) | receiver.getValue());
+		bitTime.set(BIT_DURATION / 3);
+		wait(bitTime);
+	}
+	// Determine if a valid pattern has been received by checking
+	switch (pattern) {
+		// 0b110
+		case ((1 << 2) | (1 << 1) | (0 << 0)):
+			return Bit::High;
+		// 0b100
+		case ((1 << 2) | (0 << 1) | (0 << 0)):
+			return Bit::Low;
+		default:
+			break;
+	}	
+	return Bit::Invalid;
+}
+
+Message ReceiveIRController::getMessage()
+{
+	// Initialize the message.
+	uint16_t data = 0;
+	// No point in constructing a message if none has started.
+	waitStartBit();
+	for (unsigned int i=0; i<16; ++i)
+	{
+		// Make sure a valid bit has been received, and act accordingly.
+		switch (getBit()) {
+			case Bit::High: data = ((data << 1) | 1); break;
+			case Bit::Low:  data = ((data << 1) | 0); break;
+			// Compromised message. Create an invalid message.
+			default: return Message{0};
+		}
+	}
+	return Message{data};
+}
 
 void ReceiveIRController::main(){
-	IR_Receiver ir_receiver{};
-
-	rtos::timer timeOut ( this, "timeOut");
-	rtos::clock bitDelay ( this, 800 , "bitDelay");
-	rtos::timer repeatDelay ( this, "repeatDelay");
-
-	rtos::clock checkDelay ( this, 200 , "checkDelay");
-
-	uint64_t currentBits = 0;
-	uint64_t message1 = 0;
-	uint64_t message2 = 0;
-	//uint64_t repeatBits = 0;
-	auto lastMessageTimestamp = hwlib::now_us();
-
-	bool result1;
-	bool result2;
-
-	for(;;){
-		wait( checkDelay );
-		if( ir_receiver.getValue() ){
-			//hwlib::cout << "[" __FILE__ "]: last message was " <<  hwlib::now_us() - lastMessageTimestamp << " ago\n";
-			//hwlib::cout << "Received startbit";
-			// check if repeattimer hasnt expired yet
-			bool isRepeating = false;
-			auto now = hwlib::now_us() - lastMessageTimestamp;
-			if ( now < 4000'000 && now > 2500'000 ){
-				//hwlib::cout << "This is just a tribute\n";
-				isRepeating = true;
-			}
-			currentBits = 1;
-			for(int i = 0; i < 47; i++){
-				if (i == 2 && currentBits != 6){
-					break; // if no startbit is received stop doing things
-				}
-				wait( bitDelay );
-				currentBits = (currentBits << 1) | ir_receiver.getValue();
-				
-			}
-			//hwlib::cout << "[" __FILE__ "]: received message so far: " << currentBits << "\n";
-			if (currentBits > 211106232532992){ // startbit + any other bit high
-
-				/*repeatDelay.set( 3000 );
-				wait( repeatDelay );
-				for(int i = 0; i < 48; i++){
-					wait( bitDelay );
-					repeatBits = (repeatBits << 1) | ir_receiver.getValue();
-					
-				}*/
-				//hwlib::cout << currentBits << "\n" << repeatBits << "\n";
-				
-				if (isRepeating) {
-					message2 = bitsToMessage( currentBits );
-					//bool result1 = checkChecksum( message1 );
-					result2 = checkChecksum( message2 );
-					//hwlib::cout <<"[" __FILE__ "] ";
-					//hwlib::cout << "Message : " << currentBits << "\n";
-					/*for(int i = 0; i<48; i++){
-						hwlib::cout << ( (message1 >> (47 - i) ) & 1 );
-					}*/
-					//hwlib::cout << "\nChecksum 1 = " << result1 << "\n";
-					/*for(int i = 0; i<48; i++){
-						hwlib::cout << ( (message2 >> (47 - i) ) & 1 );
-					}*/
-					//hwlib::cout << "\nChecksum 2 = " << result2 << "\n\n\n";
-					if ( result2 && (!result1) ){
-						notifyListeners( message2 );						
-					}
-				} else {
-					message1 = bitsToMessage( currentBits );
-					result1 = checkChecksum( message1 );
-					if ( result1 ){
-						notifyListeners( message1 );
-					}
-				}
-				lastMessageTimestamp = hwlib::now_us();
-				timeOut.set( 2500'000 );
-				wait( timeOut );
-				//bool result2 = checkChecksum( bitsToMessage(repeatBits) );
-			}
+	while(true)
+	{
+		Message message = getMessage();
+		if (message.isValid())
+		{
+			notifyListeners(message);
 		}
-
+		// Sender sends the message twice in the hope that at least one arrives.
+		// TODO: Make sure the second is disregarded if both have been received.
+		// There however seems to be a bug that makes the code work as intended.
 	}
-
 }
