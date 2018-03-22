@@ -6,10 +6,12 @@ GameController::GameController(GameParameterController & parameters, SendIRContr
 	rtos::task<>{ "GameController" },
 	parameters{parameters},
 	sender{sender},
-	countDownTime{ this, "countDownTime" },
-	gameTime{ this, "gameEnd" },
-	cooldownTime{ this, "cooldown" },
-	invulnerabilityTime{ this, "invulerability" },
+	countdownTime{ this, "countdownTime" },
+	// Make it so the game can be started out of the box. No particular reason.
+	gameTimeSetting{ 5 },
+	gameTime{ this, "gameTime" },
+	cooldownTime{ this, "cooldownTime" },
+	invulnerabilityTime{ this, "invulerabilityTime" },
 	messages{ this, "messages" },
 	keyPresses{ this, "keyPresses" }
 {
@@ -40,10 +42,28 @@ void GameController::waitForStartCommand()
 		if (event == messages)
 		{
 			Message message = messages.read();
+			// Start command received.
 			if(message.isStartMessage())
 			{
-				break;
-			} else {
+				// The game master doesn't participate.
+				if (parameters.GetPlayer() != GAME_MASTER)
+				{
+					break;
+				}
+				else
+				{
+					hwlib::cout << "[" __FILE__ "]: Game master doesn't participate.\n";
+				}
+			}
+			//  While waiting, the game master can configure the time.
+			// The game master is identified with playernumber 0.
+			else if (message.getPlayer() == GAME_MASTER) 
+			{
+				hwlib::cout << "[" __FILE__ "]: " << "\n";
+				gameTimeSetting = message.getTime();
+			} 
+			else 
+			{
 				hwlib::cout << "[" __FILE__ "]: Unexpected message: " << message << "\n";
 			}
 		}
@@ -55,8 +75,8 @@ void GameController::waitForCountDownEnd()
 {
 	hwlib::cout << "[" __FILE__ "]: Waiting for count down.\n";
 	// TODO: Make the time for countdown variable.
-	countDownTime.set(3 * 1'000 * 1'000);
-	while(wait() != countDownTime)
+	countdownTime.set(3 * 1'000 * 1'000);
+	while(wait() != countdownTime)
 	{
 		continue;
 	}
@@ -70,8 +90,9 @@ void GameController::startGame()
 	keyPresses.clear();
 	messages.clear();
 	
-	// TODO: Make the time the game goes on for variable.
-	gameTime.set(5 * 60 * 1'000 * 1'000);
+	hwlib::cout << "[" __FILE__ "]: Playing " << gameTimeSetting << " minutes\n";
+	// gameDurationSetting is given in minutes, but a timer expects uS.
+	gameTime.set(gameTimeSetting * 60 * 1'000 * 1'000);
 	
 	// Resetting th state so the player starts in a save way.
 	canShoot = true;
@@ -134,12 +155,24 @@ void GameController::shoot()
 
 void GameController::handleHit(Message message)
 {
+	uint16_t playerID = message.getPlayer();
 	if (isVulnerable)
 	{
-		hwlib::cout << "[" __FILE__ "]: Got hit " << message << ".\n";
-		isVulnerable = false;
-		// TODO: 
-		invulnerabilityTime.set(1);
+		if (playerID == GAME_MASTER)
+		{
+			hwlib::cout << "[" __FILE__ "]: Ignore game master.\n";
+		}
+		else if (playerID == parameters.GetPlayer())
+		{
+			hwlib::cout << "[" __FILE__ "]: Ignore self.\n";
+		}
+		else
+		{
+			hwlib::cout << "[" __FILE__ "]: Got hit " << message << ".\n";
+			isVulnerable = false;
+			// TODO: 
+			invulnerabilityTime.set(1);
+		}
 	}
 }
 

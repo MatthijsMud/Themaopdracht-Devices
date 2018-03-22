@@ -13,6 +13,10 @@ class SendIRController;
 class GameController : public rtos::task<>, public KeypadListener, public IRListener
 {
 private:
+	//! Player id for the person who sends out the start command (among others).
+	static constexpr uint16_t GAME_MASTER{0};
+	
+private:
 	GameParameterController & parameters;
 	
 private:
@@ -21,7 +25,11 @@ private:
 private:
 	//! Time to wait after receiving start signal to actually start.
 	//! Used to give the players time to separate.
-	rtos::timer countDownTime;
+	rtos::timer countdownTime;
+
+private:
+	//! Setting for how long each game will take.
+	unsigned long int gameTimeSetting;
 
 private:
 	//! Counts down once the game starts and will notify the game has ended.
