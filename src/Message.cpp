@@ -49,6 +49,12 @@ void Message::setData(uint16_t data){
 	internalMessage |= data << 5;
 	calculateChecksum();
 }
+
+uint16_t Message::getTime() const
+{
+	return getData();
+}
+
 void Message::setTime(uint16_t time){
 	setData(time);
 }
@@ -64,11 +70,18 @@ bool Message::isStartMessage() const
 }
 
 void Message::calculateChecksum(){
+	
+	uint16_t checksum{0};
+	// Usage of (condition) ? 1 : 0 to make sure the bit is 1;
+	// true is defined as being anything but 0.
+	for (unsigned int i=0; i<5; ++i)
+	{
+		// Besides the start bit 
+		checksum |= ((bit(i+1) != bit(i+6)) ? 1 : 0) << (4-i);
+	}
 	// Reset the checksum bits (X-XXXXX-XXXXX-00000).
 	internalMessage	&= ~(31 << 0);
-	for(int i = 0; i < 5; i++){
-		internalMessage |= (( internalMessage >> (14-i % 16)) & 1) ^ ((internalMessage >> (9-i % 16)) & 1 ) << (4-i);
-	}
+	internalMessage |= checksum;
 }
 
 bool Message::bit(uint8_t position) const
