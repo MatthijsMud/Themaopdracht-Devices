@@ -9,16 +9,18 @@
 #include "Screen.hpp"
 #include <cctype>
 
-class GameParameterController : public rtos::task<>, public KeypadListener, public IRListener{
+class GameParameterController : public rtos::task<>, public KeypadListener{
 	private :
     void main();
-    char WaitForKeypress(unsigned char WaitFor = '/');
+		void gameLeader();
+		int getPlayerNumber();
+		int getWeaponNumber();
     int Weapon = 0;
     int Player = 0;
 		int GameTime = 0;
 		void SendCommand(Message Message);
-		Message playermessage{0};
-		Message gameMastermessage{0};
+		Message playermessage{};
+		Message gameMastermessage{};
 		SendIRController& sendIR;
 		Screen screen{};
 
@@ -26,10 +28,7 @@ class GameParameterController : public rtos::task<>, public KeypadListener, publ
 
 		GameParameterController(SendIRController& sendIR);
     rtos::channel< char, 1 > KeyPresses{this, "KeyPresses" };
-		rtos::channel< Message, 1 > MessageReceived{this, "MessageReceived" };
     void onKeyPress(unsigned char keypad) override;
-		void messageReceived(const Message & message) override;
-		void WaitForMessage();
     int GetPlayer();
     int GetWeapon();
 
