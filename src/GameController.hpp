@@ -52,8 +52,10 @@ private:
 
 private:
 	static constexpr unsigned int MAX_NUMBER_OF_HITS = 10;
+	
 private:
 	Message hits[MAX_NUMBER_OF_HITS];
+	
 private:
 	unsigned int numberOfHits;
 
@@ -100,6 +102,10 @@ private:
 	//! Logic for getting hit.
 	//!
 	void handleHit(Message message);
+	
+private:
+	//! 
+	void logHits();
 
 public:
 	void messageReceived(const Message & message) override;

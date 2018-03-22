@@ -136,6 +136,7 @@ void GameController::startGame()
 		}
 	}
 	hwlib::cout << "[" __FILE__ "]: Game ended.\n";
+	logHits();
 }
 
 void GameController::shoot()
@@ -187,6 +188,18 @@ void GameController::handleHit(Message message)
 			// TODO: Replace with variable time for invulerability.
 			invulnerabilityTime.set(1);
 		}
+	}
+}
+
+void GameController::logHits()
+{
+	hwlib::cout << "Got hit by:\n";
+	for (unsigned int i=0; i<numberOfHits;++i)
+	{
+		Message hit = hits[i];
+		hwlib::cout << "- " 
+			<< "player " << hit.getPlayer() << "; "
+			<< "damage" << hit.getData() << "\n";
 	}
 }
 
