@@ -56,7 +56,7 @@ int main()
 
 	receiveIRController.addListener(gameController);
 	//receiveIRController.addListener()
-	
+
 	class testTask : public rtos::task<>{
 		SendIRController &theController;
 	public:
@@ -65,14 +65,14 @@ int main()
 			for(;;){
 				Message m{};
 				m.setStartMessage();
-				
+
 				theController.RequestSend( m.getMessage() );
 				hwlib::wait_ms( 6000 );
 			}
 		}
 	};
 
-	testTask theTask{ sendIRController };
+	//testTask theTask{ sendIRController };
 	rtos::run();
 
 

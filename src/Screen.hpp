@@ -12,6 +12,10 @@ class Screen{
     void gameParameterACustom(int);
     void gameParameterB();
     void gameParameterBCustom(int);
+		void gameParameterC();
+		void gameParameterC1();
+		void gameParameterC2();
+		void gameParameterCCustom(int);
     void initScreen();
     void flush();
 
@@ -39,6 +43,10 @@ class Screen{
 
       hwlib::font_default_8x8 f2 = hwlib::font_default_8x8();
       hwlib::window_ostream d2 = hwlib::window_ostream( w2, f2 );
+
+
+			hwlib::window_ostream d3 = hwlib::window_ostream( w1, f2 );
+			hwlib::window_ostream d4 = hwlib::window_ostream( w2, f2 );
 };
 
 #endif
