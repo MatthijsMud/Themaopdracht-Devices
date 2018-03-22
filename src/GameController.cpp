@@ -12,6 +12,8 @@ GameController::GameController(GameParameterController & parameters, SendIRContr
 	gameTime{ this, "gameTime" },
 	cooldownTime{ this, "cooldownTime" },
 	invulnerabilityTime{ this, "invulerabilityTime" },
+	hits{},
+	numberOfHits{ 0 },
 	messages{ this, "messages" },
 	keyPresses{ this, "keyPresses" }
 {
@@ -59,7 +61,7 @@ void GameController::waitForStartCommand()
 			// The game master is identified with playernumber 0.
 			else if (message.getPlayer() == GAME_MASTER) 
 			{
-				hwlib::cout << "[" __FILE__ "]: " << "\n";
+				hwlib::cout << "[" __FILE__ "]: Setting game time " << message.getTime() << " minutes." << "\n";
 				gameTimeSetting = message.getTime();
 			} 
 			else 
@@ -89,6 +91,8 @@ void GameController::startGame()
 	// Key presses from before the game have started are irrelevant.
 	keyPresses.clear();
 	messages.clear();
+	
+	numberOfHits = 0;
 	
 	hwlib::cout << "[" __FILE__ "]: Playing " << gameTimeSetting << " minutes\n";
 	// gameDurationSetting is given in minutes, but a timer expects uS.
@@ -139,7 +143,7 @@ void GameController::shoot()
 	if (canShoot)
 	{
 		hwlib::cout << "[" __FILE__ "]: Firing laser.\n";
-		
+		// Inform receipient that this player shot.
 		Message message{};
 		message.setPlayer(parameters.GetPlayer());
 		message.setData(parameters.GetWeapon());
@@ -156,21 +160,31 @@ void GameController::shoot()
 void GameController::handleHit(Message message)
 {
 	uint16_t playerID = message.getPlayer();
-	if (isVulnerable)
+
+	// Game master might send custom commands in future versions.
+	// The player should not ignore those, regadrless of invulnerability.
+	if (playerID == GAME_MASTER)
 	{
-		if (playerID == GAME_MASTER)
-		{
-			hwlib::cout << "[" __FILE__ "]: Ignore game master.\n";
-		}
-		else if (playerID == parameters.GetPlayer())
+		hwlib::cout << "[" __FILE__ "]: Ignore game master.\n";
+	}
+	else if (isVulnerable)
+	{
+		// Player's shouldn't be able to hit themselves, make sure it cannot happen
+		// accidentially.
+		if (playerID == parameters.GetPlayer())
 		{
 			hwlib::cout << "[" __FILE__ "]: Ignore self.\n";
 		}
 		else
 		{
 			hwlib::cout << "[" __FILE__ "]: Got hit " << message << ".\n";
+			if (numberOfHits < MAX_NUMBER_OF_HITS)
+			{
+				hits[numberOfHits++] = message;
+			}
+			
 			isVulnerable = false;
-			// TODO: 
+			// TODO: Replace with variable time for invulerability.
 			invulnerabilityTime.set(1);
 		}
 	}

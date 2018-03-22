@@ -51,6 +51,13 @@ private:
 	rtos::timer invulnerabilityTime;
 
 private:
+	static constexpr unsigned int MAX_NUMBER_OF_HITS = 10;
+private:
+	Message hits[MAX_NUMBER_OF_HITS];
+private:
+	unsigned int numberOfHits;
+
+private:
 	rtos::channel<Message, 2> messages;
 
 private:
