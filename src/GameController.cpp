@@ -193,7 +193,7 @@ void GameController::handleHit(Message message)
 
 void GameController::logHits()
 {
-	hwlib::cout << "Got hit by:\n";
+	hwlib::cout << "Player " << paramters.GetPlayer() << " got hit by:\n";
 	for (unsigned int i=0; i<numberOfHits;++i)
 	{
 		Message hit = hits[i];
@@ -201,6 +201,7 @@ void GameController::logHits()
 			<< "player " << hit.getPlayer() << "; "
 			<< "damage" << hit.getData() << "\n";
 	}
+	hwlib::cout << "\n";
 }
 
 void GameController::messageReceived(const Message & message)
