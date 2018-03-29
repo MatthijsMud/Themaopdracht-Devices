@@ -6,16 +6,18 @@
 
 class Screen{
 	public:
-		void test();
-
+		void GCHit(int lifes, int who);
+		void GCCountdown(int countdown);
+		void GCMain1(int lifes);
+		void GCMain2(int timeleft);
     void gameParameterA();
-    void gameParameterACustom(int);
+    void gameParameterACustom(int numer);
     void gameParameterB();
-    void gameParameterBCustom(int);
+    void gameParameterBCustom(int number);
 		void gameParameterC();
 		void gameParameterC1();
 		void gameParameterC2();
-		void gameParameterCCustom(int);
+		void gameParameterCCustom(int number);
     void initScreen();
     void flush();
 
