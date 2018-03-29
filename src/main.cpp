@@ -44,39 +44,19 @@ int main()
 	ReceiveIRController receiveIRController{};
 	SendIRController sendIRController{};
 	Screen Screen{};
-	//keypad.addListener();
 
 	// Multiply by 1000 to convert from microseconds to milliseconds.
 	EventHandler eventHandler{ 100 * 1'000};
 	eventHandler.addEventSource(keypad);
 
 	GameParameterController GameParameterController{sendIRController};
-
+	devices_UART theUart{gameController};
 	GameController gameController{GameParameterController, sendIRController, Screen};
+
 	keypad.addListener(gameController);
 	keypad.addListener(GameParameterController);
-
-	devices_UART theUart(gameController);
-
 	receiveIRController.addListener(gameController);
-	//receiveIRController.addListener()
 
-	class testTask : public rtos::task<>{
-		SendIRController &theController;
-	public:
-		testTask(SendIRController &theController):rtos::task<>{"Test"}, theController{theController} {}
-		void main(){
-			for(;;){
-				Message m{};
-				m.setStartMessage();
-
-				theController.RequestSend( m.getMessage() );
-				hwlib::wait_ms( 6000 );
-			}
-		}
-	};
-
-	//testTask theTask{ sendIRController };
 	rtos::run();
 
 
