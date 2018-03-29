@@ -21,9 +21,6 @@ private:
 	static constexpr uint16_t DEFAULT_HEALTH{100};
 
 private:
-	static constexpr unsigned int MAX_NUMBER_OF_HITS = DEFAULT_HEALTH;
-
-private:
 	// Assuming players can hit for a minimum of 1 damage, the max number of hits
 	// needs to be equal to the total health.
 	static constexpr unsigned int MAX_NUMBER_OF_HITS{DEFAULT_HEALTH};
