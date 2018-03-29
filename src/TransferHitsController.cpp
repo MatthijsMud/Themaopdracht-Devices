@@ -1,12 +1,12 @@
-#include "devices_UART.hpp"
+#include "TransferHitsController.hpp"
 
-void devices_UART::waitForStartCommand(){
+void TransferHitsController::waitForStartCommand(){
 	while(hwlib::cin.getc_nowait() != 's'){
 		hwlib::wait_ms( 400 );
 	}
 }
 
-void devices_UART::main(){
+void TransferHitsController::main(){
 	for(;;){
 		waitForStartCommand();
 		theController.logHits();
