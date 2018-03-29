@@ -1,28 +1,37 @@
 #ifndef DEVICES_EVENT_HANDLER_HPP
 #define DEVICES_EVENT_HANDLER_HPP
 
+//! @file
+//! @author Matthijs
+
 #include <rtos.hpp>
 
 // Forward declaration; implementation only needed in the body.
 class EventSource;
 
-//! @brief 
-//!
-//! 
+//! Utility for polling boundary objects so they can pretend to be interrupt
+//! driven.
 class EventHandler : public rtos::task<>
 {
+	
+private:
+	//! Used to poll all listeners at a constant-ish interval.
+	rtos::clock pollClock;
 	
 private:
 	static constexpr unsigned int MAX_N_EVENT_SOURCES = 10;
 	
 private:
-	// Array of EventSource pointers.
+	//! Event sources which should be polled by this event handler.
+	//! 
+	//! Due to the environment in which this application runs, usage of the heap
+	//! is undesirable. As such an array of a fixed size has been declared.
 	EventSource* eventSources[MAX_N_EVENT_SOURCES];
 
 private:
-	rtos::clock pollClock;
-
-private:
+	//! Number of even sources that have been added as listeners.
+	//! 
+	//! @see EventHandler::eventSources
 	size_t eventSourceCount;
 	
 public:
