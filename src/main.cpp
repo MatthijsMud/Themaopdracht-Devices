@@ -50,8 +50,8 @@ int main()
 	eventHandler.addEventSource(keypad);
 
 	GameParameterController GameParameterController{sendIRController};
-	devices_UART theUart{gameController};
 	GameController gameController{GameParameterController, sendIRController, Screen};
+	devices_UART theUart{gameController};
 
 	keypad.addListener(gameController);
 	keypad.addListener(GameParameterController);

@@ -7,20 +7,6 @@ ReceiveIRController::ReceiveIRController() :
 	
 }
 
-
-int ReceiveIRController::getMessageIndex(const uint16_t theMessage, int index){ // index starts at 0
-	return ( (theMessage >> (15 - index) ) & 1 );
-}
-
-bool ReceiveIRController::checkChecksum(const uint16_t theMessage){
-	//hwlib::cout << "Checking: " << theMessage << "\n";
-	return theMessage == 0 ? false : ( getMessageIndex(theMessage,1) ^ getMessageIndex(theMessage,6) ) == getMessageIndex(theMessage,11) &&
-		 ( getMessageIndex(theMessage,2) ^ getMessageIndex(theMessage,7) )  == getMessageIndex(theMessage,12) &&
-			 ( getMessageIndex(theMessage,3) ^ getMessageIndex(theMessage,8) ) == getMessageIndex(theMessage,13) &&
-				 ( getMessageIndex(theMessage,4) ^ getMessageIndex(theMessage,9) )  == getMessageIndex(theMessage,14) &&
-					 ( getMessageIndex(theMessage,5) ^ getMessageIndex(theMessage,10) )  == getMessageIndex(theMessage,15);
-}
-
 void ReceiveIRController::addListener(IRListener & theListener){
 	hwlib::cout << "Registering listener\n";
 	registeredListeners[listenerCount++] = &theListener;
@@ -34,26 +20,6 @@ void ReceiveIRController::notifyListeners(Message theMessage){
 		);
 	}
 
-}
-
-uint16_t ReceiveIRController::bitsToMessage(uint64_t theBits){
-	uint16_t returnMessage = 1;
-	//hwlib::cout << theBits << "\n";
-	//hwlib::cout << "\nbitresult: ";
-	for (int i = 0; i < 16; i++ ){
-		//hwlib::cout << theBits << "\n";
-		//hwlib::cout << ( (theBits & 6) == 1 );
-		auto theBit = ( ( theBits >> ( 45 - (i*3) ) ) & 7 ) == 6 ? 1 : 0;
-		returnMessage |= theBit;
-		returnMessage = returnMessage << 1;
-		//hwlib::cout << theBit <<"\n";
-		//theBits = theBits >> 3;
-	}
-	//hwlib::cout << returnMessage << "\n";
-	//if(checkChecksum(returnMessage)){
-	return returnMessage;	
-	//}
-	//return 0;
 }
 
 void ReceiveIRController::waitStartBit()
