@@ -9,6 +9,7 @@
 #include "ReceiveIRController.hpp"
 #include "devices_UART.hpp"
 #include "SendIRController.hpp"
+#include "Screen.hpp"
 
 int main()
 {
@@ -42,7 +43,7 @@ int main()
 
 	ReceiveIRController receiveIRController{};
 	SendIRController sendIRController{};
-
+	Screen Screen{};
 	//keypad.addListener();
 
 	// Multiply by 1000 to convert from microseconds to milliseconds.
@@ -51,7 +52,7 @@ int main()
 
 	GameParameterController GameParameterController{sendIRController};
 
-	GameController gameController{GameParameterController, sendIRController};
+	GameController gameController{GameParameterController, sendIRController, Screen};
 	keypad.addListener(gameController);
 	keypad.addListener(GameParameterController);
 

@@ -1,17 +1,36 @@
 #include "Screen.hpp"
 
-void Screen::test(){
+void Screen::GCCountdown(int countdown){
   oled.clear();
   d1 << "\f"
-      << "LASER \nshooter";
+      << "RUN AWAY"
+      << hwlib::flush;
   d2 << "\f"
-      << "==============\n"
-      << "user: Wouter\n"
-      << "score: " << 42 << "\n"
-      << "==============\n";
+      << countdown
+      << hwlib::flush;
+}
 
-      //Screen::flush();
+void Screen::GCHit(int lifes, int who){
+  oled.clear();
+  d1 << "\f"
+      << "HIT"
+      << hwlib::flush;
+  d2 << "\f"
+      << "by: " << who << "\n"
+      << lifes << " lifes left"
+      << hwlib::flush;
+}
 
+void Screen::GCMain1(int lifes){
+  d1 << "\f"
+      << lifes << " lifes"
+      << hwlib::flush;
+}
+void Screen::GCMain2(int timeleft){
+  d2 << "\f"
+      << "remaining time \n"
+      << timeleft << " minutes"
+      << hwlib::flush;
 }
 
 void Screen::gameParameterA(){
