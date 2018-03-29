@@ -15,8 +15,14 @@ class GameController : public rtos::task<>, public KeypadListener, public IRList
 private:
 	//! Player id for the person who sends out the start command (among others).
 	static constexpr uint16_t GAME_MASTER{0};
-	
+
+private:	
 	static constexpr uint16_t DEFAULT_HEALTH{100};
+	
+private:
+	// Assuming players can hit for a minimum of 1 damage, the max number of hits
+	// needs to be equal to the total health.
+	static constexpr unsigned int MAX_NUMBER_OF_HITS{DEFAULT_HEALTH};
 	
 private:
 	GameParameterController & parameters;
@@ -52,8 +58,6 @@ private:
 	//! Player becomes invulnerable for some time after getting hit.
 	rtos::timer invulnerabilityTime;
 
-private:
-	static constexpr unsigned int MAX_NUMBER_OF_HITS = 10;
 	
 private:
 	Message hits[MAX_NUMBER_OF_HITS];
