@@ -193,7 +193,7 @@ void GameController::handleHit(Message message)
 
 void GameController::logHits()
 {
-	hwlib::cout << "Player " << paramters.GetPlayer() << " got hit by:\n";
+	hwlib::cout << "Player " << parameters.GetPlayer() << " got hit by:\n";
 	for (unsigned int i=0; i<numberOfHits;++i)
 	{
 		Message hit = hits[i];
@@ -202,6 +202,17 @@ void GameController::logHits()
 			<< "damage" << hit.getData() << "\n";
 	}
 	hwlib::cout << "\n";
+}
+
+int GameController::getRemainingHealth()
+{
+	uint16_t health = DEFAULT_HEALTH;
+	for(unsigned int i=0; i<numberOfHits; ++i)
+	{
+		// Data is the weapon's power. Might need to get mapped to different value.
+		health -= hits[i].getData();
+	}
+	return health;
 }
 
 void GameController::messageReceived(const Message & message)

@@ -16,6 +16,8 @@ private:
 	//! Player id for the person who sends out the start command (among others).
 	static constexpr uint16_t GAME_MASTER{0};
 	
+	static constexpr uint16_t DEFAULT_HEALTH{100};
+	
 private:
 	GameParameterController & parameters;
 	
@@ -102,6 +104,10 @@ private:
 	//! Logic for getting hit.
 	//!
 	void handleHit(Message message);
+	
+private:
+	//! Calculates 
+	int getRemainingHealth();
 	
 private:
 	//! 
