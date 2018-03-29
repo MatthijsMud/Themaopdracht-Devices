@@ -6,20 +6,53 @@
 
 class Screen{
 	public:
+		//! screen for when the player is hit
+		//! @param lifes the remaining lifes the player has
+		//! @param who by who the player was shot
 		void GCHit(int lifes, int who);
+
+		//! countdown screen so the player can run away from the starting point
+		//! @param countdown the remaining time the player can run away
 		void GCCountdown(int countdown);
+
+		//! upper half of the screen with the lifes
+		//! @param lifes the remaining lifes
 		void GCMain1(int lifes);
+
+		//! bottom half of the screen with the remaining game time
+		//! @param timeleft the remaing game time
 		void GCMain2(int timeleft);
+
+		//! screen for GameParameterController when key A is pressed
     void gameParameterA();
+
+		//! screen for GameParameterController when key A is pressed
+		//! @param number the playernumber the player pressed
     void gameParameterACustom(int numer);
+
+		//! screen for GameParameterController when key B is pressed
     void gameParameterB();
+
+		//! screen for GameParameterController when key B is pressed
+		//! @param number the weaponstrength the player pressed
     void gameParameterBCustom(int number);
+
+		//! screen for GameParameterController when key C is pressed
 		void gameParameterC();
+
+		//! screen for GameParameterController when key C is pressed
 		void gameParameterC1();
+
+		//! screen for GameParameterController when key C is pressed
+		//! the number the player pressed
 		void gameParameterC2();
+
+		//! screen for GameParameterController when key C is pressed
+		//! the gametime the player pressed
 		void gameParameterCCustom(int number);
+
+		//! initial screen when the arduino has started
     void initScreen();
-    void flush();
 
 	private:
 

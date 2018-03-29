@@ -133,8 +133,3 @@ void Screen::initScreen(){
       << hwlib::flush;
       //Screen::flush();
 }
-
-
-void Screen::flush(){
-  oled.flush();
-}
