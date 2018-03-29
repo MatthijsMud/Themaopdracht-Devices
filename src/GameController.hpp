@@ -1,6 +1,9 @@
 #ifndef DEVICES_GAME_CONTROLLER_HPP
 #define DEVICES_GAME_CONTROLLER_HPP
 
+//! @file
+//! @author Matthijs
+
 #include <rtos.hpp>
 #include "KeypadListener.hpp"
 #include "IRListener.hpp"
@@ -67,12 +70,12 @@ private:
 	//! Player becomes invulnerable for some time after getting hit.
 	rtos::timer invulnerabilityTime;
 
-
-
 private:
+	// Serves a storage for the hits the player might receive during the game.
 	Message hits[MAX_NUMBER_OF_HITS];
 
 private:
+	// Number of hits in which have been recorded. Beyond it is junk.
 	unsigned int numberOfHits;
 
 private:
@@ -120,9 +123,14 @@ private:
 	void handleHit(Message message);
 
 private:
-	//! Calculates
+	//! Calculates the remaining of the health based on its hits.
+	//! 
+	//! @see GameController::hits
+	//! @see GameController::DEFAULT_HEALTH
 	int getRemainingHealth();
+
 public:
+	//! Writes the hits the player received to the default output.
 	void logHits();
 
 public:
