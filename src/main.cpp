@@ -7,6 +7,7 @@
 #include "GameParameterController.hpp"
 #include "GameController.hpp"
 #include "ReceiveIRController.hpp"
+#include "devices_UART.hpp"
 #include "SendIRController.hpp"
 
 int main()
@@ -53,6 +54,8 @@ int main()
 	GameController gameController{GameParameterController, sendIRController};
 	keypad.addListener(gameController);
 	keypad.addListener(GameParameterController);
+
+	devices_UART theUart(gameController);
 
 	receiveIRController.addListener(gameController);
 	//receiveIRController.addListener()

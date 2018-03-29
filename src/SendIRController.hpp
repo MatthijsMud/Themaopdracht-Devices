@@ -5,7 +5,6 @@
 #include "rtos.hpp"
 #include "Message.hpp"
 #include "Led.hpp"
-#include "hwlib.hpp"
 
 class SendIRController : public rtos::task<> {
 	private :

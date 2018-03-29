@@ -109,7 +109,7 @@ private:
 	//! Calculates 
 	int getRemainingHealth();
 	
-private:
+public:
 	//! 
 	void logHits();
 
