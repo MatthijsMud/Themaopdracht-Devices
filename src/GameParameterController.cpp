@@ -11,6 +11,7 @@ char key = '0';
   //TO-DO show initial screen
   //wait for user to input "A"
   while(true){
+    playermessage.setData(1);
     screen.initScreen();
     do{
       key = KeyPresses.read();
@@ -18,6 +19,7 @@ char key = '0';
     if (key == 'A'){
 
       Player = getPlayerNumber();
+      hwlib::cout << "playernumber parameter" << Player << "\n";
       playermessage.setPlayer(Player);
     }
 
@@ -128,6 +130,7 @@ int GameParameterController::getPlayerNumber(){
   else if(std::isdigit(key)){
     playernumber = playernumber*10 + (int)(key - '0');
     screen.gameParameterACustom(playernumber);
+
     if(playernumber > 31){
       goto start;
     }
@@ -136,7 +139,7 @@ int GameParameterController::getPlayerNumber(){
     key = KeyPresses.read();
   }
   while(key != '*');
-  return key;
+  return playernumber;
 
 }
 
@@ -169,7 +172,7 @@ int GameParameterController::getWeaponNumber(){
     key = KeyPresses.read();
   }
   while(key != '*');
-  return key;
+  return weaponstrength;
 }
 
 
